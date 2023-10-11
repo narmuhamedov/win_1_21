@@ -1,21 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Programm Lang</title>
-</head>
-<body>
+{% include 'header.html' %}
 <h1>Топ 3 языка программирования 2023</h1>
-<ul>
-    {% for i in lang_key %}
-    <li>
-        <h2>{{i.title}}</h2>
-        <p><em>{{i.description}}</em></p>
-        <img src="{{i.image.url}}" alt="programm lang">
-        <p><strong>{{i.created_date_lang}}</strong></p>
-        <p>{{i.created_date}}</p>
-    </li>
-    {% endfor %}
-</ul>
-</body>
-</html>
+<div class="flex">
+ {% for i in lang_key %}
+    <div class="card" style="width: 18rem;">
+      <img src="{{i.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{i.title}}</h5>
+        <p class="card-text">{{i.description}}</p>
+        <a href="/lang_detail/{{i.id}}/" class="btn btn-primary">Подробнее</a>
+      </div>
+</div>
+   {% endfor %}
+     </div>
+{% include 'footer.html' %}
