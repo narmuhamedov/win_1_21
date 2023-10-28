@@ -9,7 +9,7 @@ class ProgramLang(models.Model):
 
     title = models.CharField(max_length=30)
     description = models.TextField()
-    image = models.ImageField(upload_to='')
+    image = models.FileField(upload_to='', null=True)
     actuality = models.CharField(max_length=100, choices=ACTUALITY, default=ACTUALITY[0], null=True)
     video = models.URLField(null=True)
     created_date_lang = models.DateField(null=True)

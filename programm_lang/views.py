@@ -1,37 +1,52 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from . import models, forms
-
-def programm_lang_view(request):
-    lang_value = models.ProgramLang.objects.all()
-    return render(request, 'programm_lang.html', {'lang_key': lang_value})
+from django.views import generic
 
 
-def programm_lang_detail_view(request, id):
-    lang_id = get_object_or_404(models.ProgramLang, id=id)
-    return render(request, 'programm_lang_detail.html', {'lang_key': lang_id})
+class ProgrammLangView(generic.ListView):
+    template_name = 'programm_lang.html'
+    queryset = models.ProgramLang.objects.all()
 
+    def get_queryset(self):
+        return models.ProgramLang.objects.all()
 
-def createLangPostView(request):
-    method = request.method
-    if method == "POST":
-        form = forms.ProgramLangForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('Успешно добавлен')
-    else:
-        form = forms.ProgramLangForm()
-    return render(request, 'create_lang.html', {'form': form})
+class ProgramLangDetailView(generic.DetailView):
+    template_name = 'programm_lang_detail.html'
 
-def programm_lang_delete_view(request):
-    lang_value = models.ProgramLang.objects.all()
-    return render(request, 'program_lang_list.html', {'lang_key': lang_value})
+    def get_object(self, **kwargs):
+       lang = self.kwargs.get('id')
+       return get_object_or_404(models.ProgramLang, id=lang)
 
-def programm_lang_drop_view(request, id):
-    lang_id = get_object_or_404(models.ProgramLang, id=id)
-    lang_id.delete()
-    return HttpResponse('Успешно удален')
+class CreateLangPostView(generic.CreateView):
+    template_name = 'create_lang.html'
+    form_class = forms.ProgramLangForm
+    queryset = models.ProgramLang.objects.all()
+    success_url = '/'
 
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super(CreateLangPostView, self).form_valid(form=form)
+
+class UpdateLangPostView(generic.UpdateView):
+    template_name = 'update_lang.html'
+    form_class = forms.ProgramLangForm
+    success_url = '/'
+
+    def get_object(self, **kwargs):
+        lang = self.kwargs.get('id')
+        return get_object_or_404(models.ProgramLang, id=lang)
+
+    def form_valid(self, form):
+        return super(UpdateLangPostView, self).form_valid(form=form)
+
+class ProgrammLangDropView(generic.DeleteView):
+    template_name = 'confirm_delete.html'
+    success_url = '/'
+
+    def get_object(self, **kwargs):
+        lang_id = self.kwargs.get('id')
+        return get_object_or_404(models.ProgramLang, id=lang_id)
 
 def createProgrammLangView(request):
     method = request.method
@@ -46,3 +61,15 @@ def createProgrammLangView(request):
 
     return render(request, 'create_review.html', {'form': form})
 
+class SearchView(generic.ListView):
+    template_name = 'programm_lang.html'
+    context_object_name = 'lang'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return models.ProgramLang.objects.filter(title__icontains=self.request.GET.get('q'))
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get('q')
+        return contextф
