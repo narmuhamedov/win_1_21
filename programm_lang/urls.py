@@ -1,8 +1,9 @@
 from django.urls import path
 from . import views
 
+app_name='langs'
 urlpatterns = [
-    path('', views.ProgrammLangView.as_view()),
+    path('', views.ProgrammLangView.as_view(), name='lang_list'),
     path('lang_detail/<int:id>/', views.ProgramLangDetailView.as_view()),
     path('lang_list/<int:id>/delete/', views.ProgrammLangDropView.as_view()),
     path('lang_list/<int:id>/update/', views.UpdateLangPostView.as_view()),
