@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'programm_lang',
     'custom_users',
+    'hashtags',
 ]
 
 MIDDLEWARE = [
